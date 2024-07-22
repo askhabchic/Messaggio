@@ -5,9 +5,9 @@ services:
   db:
     image: postgres:13
     environment:
-      POSTGRES_DB: testdb
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
 
@@ -30,7 +30,7 @@ services:
   app:
     build: .
     environment:
-      DATABASE_URL: postgres://user:password@db:5432/testdb?sslmode=disable
+      DATABASE_URL: postgres://postgres:postgres@db:5432/postgres?sslmode=disable
       KAFKA_BROKER: kafka:9092
     depends_on:
       - db
