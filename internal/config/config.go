@@ -12,6 +12,7 @@ type Config struct {
 	Env         string `yaml:"env" env-default:"development"`
 	StoragePath string `yaml:"storage_path" env-required:"true"`
 	HTTPServer  `yaml:"http_server"`
+	Database    `yaml:"database"`
 }
 
 type HTTPServer struct {
@@ -21,19 +22,15 @@ type HTTPServer struct {
 	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"60s"`
 }
 
+type Database struct {
+	DbName   string `yaml:"db_name"`
+	Username string `yaml:"username"`
+	Password string `yaml:"password"`
+	SslMode  string `yaml:"ssl_mode" env-default:"disable"`
+}
+
 func MustLoad() *Config {
 	_ = godotenv.Load()
-
-	cfg := Config{
-		Env:         "production",
-		StoragePath: "",
-		HTTPServer:  HTTPServer{},
-	}
-	Config{
-		Port:        getEnv("PORT", "8080"),
-		DatabaseDSN: os.Getenv("DATABASE_URL"),
-		KafkaBroker: os.Getenv("KAFKA_BROKER"),
-	}
 
 	configPath := os.Getenv("CONFIG_PATH")
 	if configPath == "" {

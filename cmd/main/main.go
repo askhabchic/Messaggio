@@ -25,10 +25,22 @@ func main() {
 	log.Info("initializing server", slog.String("address", cfg.Address))
 	log.Debug("logger debug mode enabled")
 
-	storage.InitDB()
+	db, err := storage.Connection(cfg)
+	if err != nil {
+		log.Error("Error DB connection: ", err)
+	}
+
+	log.Info("DB connected")
+	s := storage.NewStorage(db, log)
+	//if err = s.CreateTable(); err != nil {
+	//	log.Error("Table create error: ", err)
+	//}
 
 	router := chi.NewRouter()
-	api.Register(router)
+
+	handl := api.NewHandler(s, log)
+	handl.Register(router)
+
 	log.Info("Starting server", slog.String("port", cfg.Port))
 	if err := http.ListenAndServe(fmt.Sprintf(":%s", cfg.Port), router); err != nil {
 		log.Error("Error starting server: ", err)
