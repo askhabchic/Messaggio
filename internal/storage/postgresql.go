@@ -16,25 +16,28 @@ type Storage struct {
 
 func NewStorage(db *sql.DB, log *slog.Logger) *Storage {
 	return &Storage{
-		db:  nil,
-		log: nil,
+		db:  db,
+		log: log,
 	}
 }
 
-func (s *Storage) CreateTable() error {
-	const fn = "storage.postgresql.CreateTable()"
-
-	stmt, err := s.db.Prepare(`CREATE TABLE IF NOT EXISTS messages (
+const (
+	tableCreateQuery = `CREATE TABLE IF NOT EXISTS messages (
     id SERIAL PRIMARY KEY,
     content TEXT NOT NULL,
     created_at timestamptz DEFAULT statement_timestamp(),
     status BOOLEAN DEFAULT FALSE,
-    processed_at timestamptz);`)
-	if err != nil {
-		return fmt.Errorf("%s: %w", fn, err)
-	}
+    processed_at timestamptz);`
+	insertMessagesQuery    = `INSERT INTO messages (content) VALUES ($1)`
+	selectStatusTrueQuery  = `SELECT COUNT(*) FROM messages WHERE status = TRUE`
+	selectStatusFalseQuery = `SELECT COUNT(*) FROM messages WHERE status = FALSE`
+)
 
-	_, err = stmt.Exec()
+func (s *Storage) CreateTable() error {
+	const fn = "storage.postgresql.CreateTable()"
+
+	_, err := s.db.Exec(tableCreateQuery)
+
 	if err != nil {
 		return fmt.Errorf("%s: %w", fn, err)
 	}
@@ -45,7 +48,7 @@ func (s *Storage) CreateTable() error {
 func (s *Storage) SaveMessage(msg models.Message) error {
 	const fn = "storage.postgresql.SaveMessage()"
 
-	err := s.db.QueryRow("INSERT INTO messages (content) VALUES ($1)", msg.Content)
+	err := s.db.QueryRow(insertMessagesQuery, msg.Content)
 	if err != nil {
 		return fmt.Errorf("%s: %w", fn, err)
 	}
@@ -57,17 +60,15 @@ func (s *Storage) GetStats() (map[string]int, error) {
 
 	stats := make(map[string]int)
 	var count int
-	if err := s.db.QueryRow(
-		"SELECT COUNT(*) FROM messages WHERE status = TRUE",
-	).Scan(&count); err != nil {
-		return nil, fmt.Errorf("%s: %w", fn, err)
+	rows := s.db.QueryRow(selectStatusTrueQuery).Scan(&count)
+	if rows.Error() != "" {
+		return nil, fmt.Errorf("%s: %w", fn, rows.Error())
 	}
 	stats["processed"] = count
 
-	if err := s.db.QueryRow(
-		"SELECT COUNT(*) FROM messages WHERE status = FALSE",
-	).Scan(&count); err != nil {
-		return nil, fmt.Errorf("%s: %w", fn, err)
+	rows = s.db.QueryRow(selectStatusFalseQuery).Scan(&count)
+	if rows.Error() != "" {
+		return nil, fmt.Errorf("%s: %w", fn, rows.Error())
 	}
 	stats["unprocessed"] = count
 

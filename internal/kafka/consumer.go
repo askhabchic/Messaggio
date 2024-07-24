@@ -1,11 +1,19 @@
-package brocker
+package kafka
 
 import (
+	"Messaggio/internal/storage"
 	"encoding/json"
 	"fmt"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"time"
 )
+
+type Consumer struct {
+	consumer *kafka.Consumer
+	storage  *storage.Storage
+}
+
+//func NewConsumer(cfg)
 
 func ReadMessage() error {
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{

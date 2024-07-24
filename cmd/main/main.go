@@ -32,9 +32,9 @@ func main() {
 
 	log.Info("DB connected")
 	s := storage.NewStorage(db, log)
-	//if err = s.CreateTable(); err != nil {
-	//	log.Error("Table create error: ", err)
-	//}
+	if err = s.CreateTable(); err != nil {
+		log.Error("Table create error: ", err)
+	}
 
 	router := chi.NewRouter()
 

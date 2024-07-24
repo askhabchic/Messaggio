@@ -11,9 +11,9 @@
 4||10|c|G
 4||10|C|G
 4||10|T|G</Grants>
-      <IntrospectionStateNumber>743</IntrospectionStateNumber>
+      <IntrospectionStateNumber>745</IntrospectionStateNumber>
       <ServerVersion>16.2</ServerVersion>
-      <StartupTime>1721752822</StartupTime>
+      <StartupTime>1721844090</StartupTime>
       <TimeZones>true ACDT
 true ACSST
 false ACST
@@ -813,7 +813,7 @@ false Zulu
 13474||10|C|G
 13474||-9223372036854775808|U|G
 13474||10|U|G</Grants>
-      <IntrospectionStateNumber>743</IntrospectionStateNumber>
+      <IntrospectionStateNumber>745</IntrospectionStateNumber>
       <ObjectId>5</ObjectId>
       <OwnerName>postgres</OwnerName>
     </database>
@@ -4239,12 +4239,78 @@ false Zulu
     <schema id="265" parent="3" name="public">
       <Comment>standard public schema</Comment>
       <Current>1</Current>
-      <IntrospectionStateNumber>743</IntrospectionStateNumber>
-      <IntrospectionTimestamp>2024-07-23.19:59:07.544</IntrospectionTimestamp>
-      <LocalIntrospectionTimestamp>2024-07-23.16:59:08</LocalIntrospectionTimestamp>
+      <IntrospectionStateNumber>745</IntrospectionStateNumber>
+      <IntrospectionTimestamp>2024-07-24.21:10:22.633</IntrospectionTimestamp>
+      <LocalIntrospectionTimestamp>2024-07-24.18:10:23</LocalIntrospectionTimestamp>
       <ObjectId>2200</ObjectId>
       <StateNumber>523</StateNumber>
       <OwnerName>pg_database_owner</OwnerName>
     </schema>
+    <sequence id="266" parent="265" name="messages_id_seq">
+      <DasType>integer|0s</DasType>
+      <ObjectId>24576</ObjectId>
+      <SequenceIdentity>1(1)</SequenceIdentity>
+      <StartValue>1</StartValue>
+      <StateNumber>744</StateNumber>
+      <OwnerName>postgres</OwnerName>
+    </sequence>
+    <table id="267" parent="265" name="messages">
+      <ObjectId>24577</ObjectId>
+      <StateNumber>744</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>postgres</OwnerName>
+    </table>
+    <column id="268" parent="267" name="id">
+      <DasType>integer|0s</DasType>
+      <DefaultExpression>nextval(&apos;messages_id_seq&apos;::regclass)</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>744</StateNumber>
+      <SequenceId>24576</SequenceId>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="269" parent="267" name="content">
+      <DasType>text|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>744</StateNumber>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="270" parent="267" name="created_at">
+      <DasType>timestamp with time zone|0s</DasType>
+      <DefaultExpression>statement_timestamp()</DefaultExpression>
+      <Position>3</Position>
+      <StateNumber>744</StateNumber>
+      <TypeId>1184</TypeId>
+    </column>
+    <column id="271" parent="267" name="status">
+      <DasType>boolean|0s</DasType>
+      <DefaultExpression>false</DefaultExpression>
+      <Position>4</Position>
+      <StateNumber>744</StateNumber>
+      <TypeId>16</TypeId>
+    </column>
+    <column id="272" parent="267" name="processed_at">
+      <DasType>timestamp with time zone|0s</DasType>
+      <Position>5</Position>
+      <StateNumber>744</StateNumber>
+      <TypeId>1184</TypeId>
+    </column>
+    <index id="273" parent="267" name="messages_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>24585</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>744</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="274" parent="267" name="messages_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>24586</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>744</StateNumber>
+      <UnderlyingIndexId>24585</UnderlyingIndexId>
+    </key>
   </database-model>
 </dataSource>
