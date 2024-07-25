@@ -38,8 +38,8 @@ func main() {
 
 	router := chi.NewRouter()
 
-	handl := api.NewHandler(s, log)
-	handl.Register(router)
+	handler := api.NewHandler(s, log)
+	handler.Register(router)
 
 	log.Info("Starting server", slog.String("port", cfg.Port))
 	if err := http.ListenAndServe(fmt.Sprintf(":%s", cfg.Port), router); err != nil {

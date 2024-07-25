@@ -5,6 +5,7 @@ import (
 	"Messaggio/internal/storage"
 	"encoding/json"
 	"github.com/go-chi/chi"
+	"html/template"
 	"log/slog"
 	"net/http"
 )
@@ -25,21 +26,53 @@ func NewHandler(db *storage.Storage, log *slog.Logger) *Handler {
 }
 
 func (h *Handler) Register(router *chi.Mux) {
+	router.Get("/", h.formHandler)
 	router.Post("/messages", h.messageHandler)
 	router.Get("/status", h.statusHandler)
+}
+
+func (h *Handler) formHandler(w http.ResponseWriter, r *http.Request) {
+	h.logger.Info("api.handler.formHandler")
+
+	tmp, err := template.ParseFiles("/Users/fhyman/GolandProjects/Messaggio/ui/index.html")
+	if err != nil {
+		http.Error(w, "Error parse file", http.StatusInternalServerError)
+		h.logger.Error("error: ", err)
+		return
+	}
+
+	err = tmp.Execute(w, nil)
+	if err != nil {
+		http.Error(w, "Error executing file", http.StatusInternalServerError)
+		h.logger.Error("error: ", err)
+		return
+	}
+
+	if err = r.ParseForm(); err != nil {
+		http.Error(w, "Error parsing form", http.StatusBadRequest)
+		h.logger.Error("error: ", err)
+		return
+	}
+	http.Redirect(w, r, "/messages", http.StatusSeeOther)
 }
 
 func (h *Handler) messageHandler(w http.ResponseWriter, r *http.Request) {
 	h.logger.Info("api.handler.messageHandler")
 
-	var msg models.Message
-	err := json.NewDecoder(r.Body).Decode(&msg)
-	if err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+	msgContent := r.FormValue("content")
+	if msgContent == "" {
+		http.Error(w, "Message content is empty", http.StatusBadRequest)
 		return
 	}
 
-	err = h.storage.SaveMessage(msg)
+	msg := models.Message{Content: msgContent}
+	//err = json.NewDecoder(r.Body).Decode(&msg)
+	//if err != nil {
+	//	http.Error(w, "Invalid request body", http.StatusBadRequest)
+	//	return
+	//}
+
+	err := h.storage.SaveMessage(msg)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -49,6 +82,10 @@ func (h *Handler) messageHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) statusHandler(w http.ResponseWriter, r *http.Request) {
+	//_, err := w.Write([]byte("hello"))
+	//if err != nil {
+	//	log.Print(err)
+	//}
 	stats, err := h.storage.GetStats()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
