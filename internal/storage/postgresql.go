@@ -48,7 +48,7 @@ func (s *Storage) CreateTable() error {
 func (s *Storage) SaveMessage(msg models.Message) error {
 	const fn = "storage.postgresql.SaveMessage()"
 
-	err := s.db.QueryRow(insertMessagesQuery, msg.Content)
+	_, err := s.db.Exec(insertMessagesQuery, msg.Content)
 	if err != nil {
 		return fmt.Errorf("%s: %w", fn, err)
 	}

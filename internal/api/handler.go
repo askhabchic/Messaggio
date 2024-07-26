@@ -59,18 +59,27 @@ func (h *Handler) formHandler(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) messageHandler(w http.ResponseWriter, r *http.Request) {
 	h.logger.Info("api.handler.messageHandler")
 
-	msgContent := r.FormValue("content")
-	if msgContent == "" {
-		http.Error(w, "Message content is empty", http.StatusBadRequest)
-		return
-	}
-
-	msg := models.Message{Content: msgContent}
-	//err = json.NewDecoder(r.Body).Decode(&msg)
-	//if err != nil {
-	//	http.Error(w, "Invalid request body", http.StatusBadRequest)
+	//msgContent := r.FormValue("content")
+	//if msgContent == "" {
+	//	http.Error(w, "Message content is empty", http.StatusBadRequest)
 	//	return
 	//}
+
+	var msg models.Message
+	if r.Header.Get("Content-Type") == "application/json" {
+		err := json.NewDecoder(r.Body).Decode(&msg)
+		if err != nil {
+			http.Error(w, "Invalid request body", http.StatusBadRequest)
+			return
+		}
+	} else {
+		msgContent := r.FormValue("message")
+		if msgContent == "" {
+			http.Error(w, "Message content is empty", http.StatusBadRequest)
+			return
+		}
+		msg = models.Message{Content: msgContent}
+	}
 
 	err := h.storage.SaveMessage(msg)
 	if err != nil {
@@ -82,10 +91,6 @@ func (h *Handler) messageHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) statusHandler(w http.ResponseWriter, r *http.Request) {
-	//_, err := w.Write([]byte("hello"))
-	//if err != nil {
-	//	log.Print(err)
-	//}
 	stats, err := h.storage.GetStats()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -98,7 +103,7 @@ func (h *Handler) statusHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
+	//w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	_, err = w.Write(marshaledStats)
 	if err != nil {
