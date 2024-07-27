@@ -1,4 +1,4 @@
-package kafka
+package broker
 
 import (
 	"Messaggio/internal/storage"

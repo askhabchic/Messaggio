@@ -1,6 +1,7 @@
 package api
 
 import (
+	"Messaggio/internal/broker"
 	"Messaggio/internal/models"
 	"Messaggio/internal/storage"
 	"encoding/json"
@@ -11,17 +12,17 @@ import (
 )
 
 type Handler struct {
-	storage *storage.Storage
-	//producer *kafka.Producer
-	logger *slog.Logger
+	storage  *storage.Storage
+	producer *broker.Producer
+	logger   *slog.Logger
 }
 
-// func NewHandler(db *storage.Storage, log *slog.Logger, prod *kafka.Producer) *Handler {
-func NewHandler(db *storage.Storage, log *slog.Logger) *Handler {
+func NewHandler(db *storage.Storage, log *slog.Logger, prod *broker.Producer) *Handler {
+	//func NewHandler(db *storage.Storage, log *slog.Logger) *Handler {
 	return &Handler{
-		storage: db,
-		//producer: prod,
-		logger: log,
+		storage:  db,
+		producer: prod,
+		logger:   log,
 	}
 }
 
@@ -82,6 +83,12 @@ func (h *Handler) messageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err := h.storage.SaveMessage(msg)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = h.producer.SendMessage(msg)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

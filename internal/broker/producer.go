@@ -1,10 +1,11 @@
-package kafka
+package broker
 
 import (
 	"Messaggio/internal/models"
 	"fmt"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"log"
+	"strconv"
 )
 
 type Producer struct {
@@ -14,10 +15,8 @@ type Producer struct {
 func NewProducer() (*Producer, error) {
 	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "localhost"})
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-
-	defer p.Close()
 
 	// Delivery report handler for produced messages
 	go func() {
@@ -34,22 +33,25 @@ func NewProducer() (*Producer, error) {
 	}()
 
 	// Produce messages to topic (asynchronously)
-	return nil, err
+	return &Producer{producer: p}, nil
 }
 
-func (p *Producer) SendMessage(msg *models.Message) error {
-	topic := "myTopic"
-	for _, word := range []string{"Welcome", "to", "the", "Confluent", "Kafka", "Golang", "client"} {
-		if err := p.producer.Produce(&kafka.Message{
-			TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
-			Value:          []byte(word),
-		}, nil); err != nil {
-			log.Fatal(err)
-		}
+func (p *Producer) SendMessage(msg models.Message) error {
+	topic := "topicMessage"
+
+	if err := p.producer.Produce(&kafka.Message{
+		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
+		Value:          []byte(msg.Content),
+		Key:            []byte(strconv.Itoa(msg.ID)),
+	}, nil); err != nil {
+		log.Fatal(err)
+		return err
 	}
 
-	// Wait for message deliveries before shutting down
 	p.producer.Flush(15 * 1000)
-	//return p.producer.Produce()
 	return nil
+}
+
+func (p *Producer) Close() {
+	p.producer.Close()
 }

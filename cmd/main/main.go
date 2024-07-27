@@ -2,6 +2,7 @@ package main
 
 import (
 	"Messaggio/internal/api"
+	"Messaggio/internal/broker"
 	"Messaggio/internal/config"
 	"Messaggio/internal/storage"
 	"fmt"
@@ -38,7 +39,14 @@ func main() {
 
 	router := chi.NewRouter()
 
-	handler := api.NewHandler(s, log)
+	producer, err := broker.NewProducer()
+	if err != nil {
+		log.Error("Failed to create producer: ", err)
+		return
+	}
+	defer producer.Close()
+
+	handler := api.NewHandler(s, log, producer)
 	handler.Register(router)
 
 	log.Info("Starting server", slog.String("port", cfg.Port))
