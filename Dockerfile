@@ -2,17 +2,18 @@
 FROM golang:1.21-alpine
 LABEL authors="ashilmira"
 
-WORKDIR /app
+#ENV GO111MODULE=on
 
-COPY go.mod ./
-COPY go.sum ./
-RUN go mod download
+WORKDIR ./home
+#
+#COPY go.mod go.sum ./
+#RUN go mod download
 
-COPY . ./
+COPY . ./home
 
-RUN go build -o /server cmd/server/main.go
+#RUN #CONFIG_PATH=./config/local.yaml ./server
 
 EXPOSE 8080
 
-CMD ["/server"]
+CMD ["CONFIG_PATH=./config/local.yaml ./home/server"]
 
