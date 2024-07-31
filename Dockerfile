@@ -1,19 +1,18 @@
 # Dockerfile
-FROM golang:1.21-alpine
+FROM golang:latest
 LABEL authors="ashilmira"
 
-#ENV GO111MODULE=on
+WORKDIR /app
+ENV CONFIG_PATH=./config/local.yaml
 
-WORKDIR ./home
-#
 #COPY go.mod go.sum ./
-#RUN go mod download
+COPY . ./
 
-COPY . ./home
+RUN go mod download
 
-#RUN #CONFIG_PATH=./config/local.yaml ./server
+RUN go build -o server cmd/main/main.go
 
 EXPOSE 8080
 
-CMD ["CONFIG_PATH=./config/local.yaml ./home/server"]
+ENTRYPOINT ["./server"]
 

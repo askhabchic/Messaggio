@@ -78,8 +78,8 @@ func (s *Storage) GetStats() (map[string]int, error) {
 func Connection(cfg *config.Config) (*sql.DB, error) {
 	const fn = "storage.postgresql.New()"
 
-	connStr := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=%s",
-		cfg.Username, cfg.Password, cfg.DbName, cfg.SslMode)
+	connStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=%s",
+		cfg.DbHost, cfg.Username, cfg.Password, cfg.DbName, cfg.SslMode)
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", fn, err)

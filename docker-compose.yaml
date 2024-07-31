@@ -10,30 +10,54 @@ services:
       POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
+    networks:
+      - server-network
 
   kafka:
     image: confluentinc/cp-kafka:latest
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
     ports:
-      - "9092:9092"
+      - "29092:29092"
     depends_on:
       - zookeeper
+    networks:
+      - server-network
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - server-network
 
-#  server:
-#    build: .
-#    environment:
-#      DATABASE_URL: postgres://postgres:postgres@db:5432/postgres?sslmode=disable
-#      KAFKA_BROKER: broker:9092
-#    depends_on:
-#      - db
-#      - kafka
-#    ports:
-#      - "8080:8080"
+  app:
+    build: .
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/postgres?sslmode=disable
+      KAFKA_BROKER: broker:29092
+    depends_on:
+      - db
+      - kafka
+    ports:
+      - "8080:8080"
+    networks:
+      - server-network
+
+  consumer:
+    build: consumer
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/postgres?sslmode=disable
+      KAFKA_BROKER: broker:29092
+    ports:
+      - "8080:8080"
+    networks:
+      - server-network
+
+networks:
+  server-network:
+    driver: bridge

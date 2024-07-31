@@ -7,7 +7,16 @@
     <list default="true" id="4e01db77-3ad7-4958-aea2-41eeb4a0ef96" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/local.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/local.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/api/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/api/handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/broker/consumer.go" beforeDir="false" afterPath="$PROJECT_DIR$/consumer/consumer.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/broker/producer.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/broker/producer.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/storage/postgresql.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/storage/postgresql.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server" beforeDir="false" afterPath="$PROJECT_DIR$/server" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,10 +78,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/consumer" />
       <recent name="$PROJECT_DIR$/internal/kafka" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.go build Messaggio/cmd/main">
+  <component name="RunManager" selected="Go Build.go build Messaggio/consumer">
     <configuration name="go build Messaggio/cmd/main" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="Messaggio" />
       <working_directory value="$PROJECT_DIR$" />
@@ -83,6 +93,15 @@
       <package value="Messaggio/cmd/main" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$/cmd/main/main.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build Messaggio/consumer" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="Messaggio" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="Messaggio/consumer" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/consumer/consumer.go" />
       <method v="2" />
     </configuration>
     <configuration name="Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker">
@@ -100,7 +119,9 @@
       <method v="2" />
     </configuration>
     <configuration default="true" type="docker-deploy" factoryName="dockerfile" temporary="true">
-      <deployment type="dockerfile" />
+      <deployment type="dockerfile">
+        <settings />
+      </deployment>
       <method v="2" />
     </configuration>
     <configuration name="docker-compose.yaml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
@@ -125,26 +146,13 @@
       </deployment>
       <method v="2" />
     </configuration>
-    <configuration name="docker-compose.yaml.kafka: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
-      <deployment type="docker-compose.yml">
-        <settings>
-          <option name="services">
-            <list>
-              <option value="kafka" />
-            </list>
-          </option>
-          <option name="sourceFilePath" value="docker-compose.yaml" />
-        </settings>
-      </deployment>
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Build.go build Messaggio/consumer" />
         <item itemvalue="Go Build.go build Messaggio/cmd/main" />
         <item itemvalue="Docker.Dockerfile" />
         <item itemvalue="Docker.docker-compose.yaml: Compose Deployment" />
         <item itemvalue="Docker.docker-compose.yaml.consumer: Compose Deployment" />
-        <item itemvalue="Docker.docker-compose.yaml.kafka: Compose Deployment" />
       </list>
     </recent_temporary>
   </component>

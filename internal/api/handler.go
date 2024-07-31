@@ -35,7 +35,7 @@ func (h *Handler) Register(router *chi.Mux) {
 func (h *Handler) formHandler(w http.ResponseWriter, r *http.Request) {
 	h.logger.Info("api.handler.formHandler")
 
-	tmp, err := template.ParseFiles("/Users/fhyman/GolandProjects/Messaggio/ui/index.html")
+	tmp, err := template.ParseFiles("./ui/index.html")
 	if err != nil {
 		http.Error(w, "Error parse file", http.StatusInternalServerError)
 		h.logger.Error("error: ", err)
